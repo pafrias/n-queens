@@ -78,13 +78,7 @@
     // --------------------------------------------------------------
     //
     // test if a specific row on this board contains a conflict
-    hasRowConflictAt: function(rowIndex) {
-      /*
-        sum the values of row
-        if the sum is greater than 1
-        return true
-          
-      */
+    hasRowConflictAt: function(rowIndex) { 
       
       var rows = this.rows();
       var n = rows[0].length;
@@ -99,17 +93,7 @@
     },
 
     // test if any rows on this board contain conflicts
-    hasAnyRowConflicts: function() {
-      /*
-        store rows
-        store an "n"
-        for every row
-          run hasConflictAt
-          if yes
-            return true
-        
-        return false
-      */
+    hasAnyRowConflicts: function() { 
       
       var n = this.rows().length;
       for (let i = 0; i < n; i++) {
@@ -127,11 +111,43 @@
     //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
+      /*
+        1) store the rows and n (size), and a sum
+        2) for loop of size n
+        --> add the column value to sum
+        3) check if sum > 1,
+        --> if so, return true
+        --> else return false
+      */
+      
+      var rows = this.rows();
+      var n = rows[0].length;
+      var sum = 0;
+      for (let i = 0; i < n; i++) {
+        sum += rows[i][colIndex];
+      }
+      if (sum > 1) {
+        return true;
+      }
       return false; // fixme
     },
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
+      /*
+        1) store rows, n
+        2) for every column index
+        --> feed into hasColConflict
+        ----> if ^ is true, return true
+        3) return fals
+        
+      */
+      var n = this.rows().length;
+      for (let i = 0; i < n; i++) {
+        if (this.hasColConflictAt(i)) {
+          return true;
+        }
+      }
       return false; // fixme
     },
 
