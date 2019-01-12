@@ -60,8 +60,7 @@ window.countNRooksSolutions = function(n) {
         prevBoard.togglePiece(Math.floor(prevBoard.counter / n), prevBoard.counter % n);
         return null; // break out of base case?
       } else {
-        var parentRows = prevBoard.rows().slice(0); // inheritance?
-        var child = new Board(parentRows);
+        var child = new Board(prevBoard.rows());
         child.counter = prevBoard.counter + 1;
         child.depth = prevBoard.depth;
         if (child._isInBounds(Math.floor(child.counter / n), child.counter % n)) {
@@ -72,8 +71,10 @@ window.countNRooksSolutions = function(n) {
     prevBoard.togglePiece(Math.floor(prevBoard.counter / n), prevBoard.counter % n);
     prevBoard.depth--;
     prevBoard.counter++;
-    if (prevBoard._isInBounds(Math.floor(prevBoard.counter / n), prevBoard.counter % n)) {
-      deeper(prevBoard);
+    if (prevBoard.depth < Math.floor(prevBoard.counter / n)) {
+      return null;
+    } else if (prevBoard._isInBounds(Math.floor(prevBoard.counter / n), prevBoard.counter % n)) { //counter in bounds?
+        deeper(prevBoard);
     } else {
       return null;
     }
@@ -117,7 +118,10 @@ window.findNQueensSolution = function(n) {
     prevBoard.togglePiece(Math.floor(prevBoard.counter / n), prevBoard.counter % n);
     prevBoard.depth--;
     prevBoard.counter++;
-    if (prevBoard._isInBounds(Math.floor(prevBoard.counter / n), prevBoard.counter % n)) {
+
+    if (prevBoard.depth < Math.floor(prevBoard.counter / n)) {
+      return null;
+    } else if (prevBoard._isInBounds(Math.floor(prevBoard.counter / n), prevBoard.counter % n)) {
       deeper(prevBoard);
     } else {
       return null;
