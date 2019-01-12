@@ -43,6 +43,7 @@ window.countNRooksSolutions = function(n) {
   /*
     no current optimizations:
     - what if counter is too big for pieces remaining?
+    - inheritance issues
     
     possible optimizations:
     - should only check the first row
@@ -71,13 +72,46 @@ window.countNRooksSolutions = function(n) {
     6) call recursive on new board
     7) return total and pop champagne
     --> else get frustrated
-    
   */
   
-  var solutionCount = undefined; //fixme
-
-  console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
-  return solutionCount;
+  var total = 0;
+  var parentBoard = new Board({ n: n });
+  parentBoard.counter = 0;
+  parentBoard.depth = 0; // pieces left to place
+  var deeper = function(prevBoard) {
+    //could create child?
+    prevBoard.togglePiece(Math.floor(prevBoard.counter / n), prevBoard.counter % n);
+    prevBoard.depth++;
+    if (!prevBoard.hasAnyRooksConflicts()) { //if board checks out
+      if (prevBoard.depth === n) {
+        total++;
+        prevBoard.togglePiece(Math.floor(prevBoard.counter / n), prevBoard.counter % n);
+        return null; // break out of base case?
+      } else {
+        var parentRows = prevBoard.rows().slice(0); // inheritance?
+        var child = new Board(parentRows);
+        child.counter = prevBoard.counter + 1;
+        child.depth = prevBoard.depth;
+        if (child._isInBounds(Math.floor(child.counter / n), child.counter % n)) {
+          deeper(child);
+        }
+        // prevBoard.togglePiece(Math.floor(prevBoard.counter / n), prevBoard.counter % n);
+        // return null;
+      }
+    }
+    prevBoard.togglePiece(Math.floor(prevBoard.counter / n), prevBoard.counter % n);
+    prevBoard.depth--;
+    prevBoard.counter++;
+    if (prevBoard._isInBounds(Math.floor(prevBoard.counter / n), prevBoard.counter % n)) {
+      deeper(prevBoard);
+    } else {
+      return null;
+    }
+  };
+  
+  deeper(parentBoard);
+  console.log('Number of solutions for ' + n + ' rooks:', total);
+  return total;
 };
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
