@@ -28,13 +28,6 @@ window.findNRooksSolution = function(n) {
   } else {
     console.log('solution failed');
   }
-  // make a board
-  // put rooks on the midline
-  // check the board
-  // if it passes all tests
-  //   return solution
-  
-  
 };
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
@@ -47,7 +40,7 @@ window.countNRooksSolutions = function(n) {
   var deeper = function(prevBoard) {
     prevBoard.togglePiece(Math.floor(prevBoard.counter / n), prevBoard.counter % n);
     prevBoard.depth++;
-    if (!prevBoard.hasAnyRooksConflicts()) {
+    if (!prevBoard.hasAnyRooksConflicts(1)) {
       if (prevBoard.depth === n) {
         totalSolutions++;
         prevBoard.togglePiece(Math.floor(prevBoard.counter / n), prevBoard.counter % n);
@@ -55,8 +48,8 @@ window.countNRooksSolutions = function(n) {
       } else {
         var parentRows = prevBoard.rows().slice(0);
         var child = new Board(parentRows);
-        child.counter = prevBoard.counter + 1;
         child.depth = prevBoard.depth;
+        child.counter = (Math.floor(prevBoard.counter / n) + 1) * n;
         if (child._isInBounds(Math.floor(child.counter / n), child.counter % n)) {
           deeper(child);
         }
@@ -65,18 +58,6 @@ window.countNRooksSolutions = function(n) {
     prevBoard.togglePiece(Math.floor(prevBoard.counter / n), prevBoard.counter % n);
     prevBoard.depth--;
     prevBoard.counter++;
-    /*
-      d       c
-      0       1 Y - Math.floor(prevBoard.counter / n) evals to 0
-      0       2 Y
-      0       3 Y
-      0       4 X - Math.floor(prevBoard.counter / n) evals to 1
-      1       4 Y -  ''
-      1       5 Y
-      1       6 Y
-      1       7 Y
-      1       8 X - Math.floor(prevBoard.counter / n) evals to 2
-    */
     if ((prevBoard.depth >= Math.floor(prevBoard.counter / n)) && 
       prevBoard._isInBounds(Math.floor(prevBoard.counter / n), prevBoard.counter % n)) {
       deeper(prevBoard);
@@ -102,16 +83,15 @@ window.findNQueensSolution = function(n) {
   var deeper = function(prevBoard) {
     prevBoard.togglePiece(Math.floor(prevBoard.counter / n), prevBoard.counter % n);
     prevBoard.depth++;
-    if (!prevBoard.hasAnyQueensConflicts()) { //if board checks out
+    if (!prevBoard.hasAnyQueensConflicts(1)) { //if board checks out
       if (prevBoard.depth === n) {
         solution = prevBoard.rows();
-        //prevBoard.togglePiece(Math.floor(prevBoard.counter / n), prevBoard.counter % n);
-        return null; // break out of base case?
+        return null;
       } else {
         var parentRows = prevBoard.rows().slice(0); // inheritance?
         var child = new Board(parentRows);
-        child.counter = prevBoard.counter + 1;
         child.depth = prevBoard.depth;
+        child.counter = (Math.floor(prevBoard.counter / n) + 1) * n;
         if (child._isInBounds(Math.floor(child.counter / n), child.counter % n)) {
           deeper(child);
         }
@@ -145,19 +125,18 @@ window.countNQueensSolutions = function(n) {
   parentBoard.counter = 0;
   parentBoard.depth = 0; // pieces left to place
   var deeper = function(prevBoard) {
-    //could create child?
     prevBoard.togglePiece(Math.floor(prevBoard.counter / n), prevBoard.counter % n);
     prevBoard.depth++;
-    if (!prevBoard.hasAnyQueensConflicts()) { //if board checks out
+    if (!prevBoard.hasAnyQueensConflicts(1)) { //if board checks out
       if (prevBoard.depth === n) {
         totalSolutions++;
         prevBoard.togglePiece(Math.floor(prevBoard.counter / n), prevBoard.counter % n);
         return null; // break out of base case?
       } else {
-        var parentRows = prevBoard.rows().slice(0); // inheritance?
+        var parentRows = prevBoard.rows().slice(0);
         var child = new Board(parentRows);
-        child.counter = prevBoard.counter + 1;
         child.depth = prevBoard.depth;
+        child.counter = (Math.floor(prevBoard.counter / n) + 1) * n;
         if (child._isInBounds(Math.floor(child.counter / n), child.counter % n)) {
           deeper(child);
         }
@@ -179,3 +158,12 @@ window.countNQueensSolutions = function(n) {
   console.log('Number of solutions for ' + n + ' queens:', totalSolutions);
   return totalSolutions;
 };
+
+/*
+  skip used columns
+  skip used diagonals
+  
+  memoization and rotation 0.o
+*/
+
+

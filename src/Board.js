@@ -37,8 +37,16 @@
       return colIndex + rowIndex;
     },
 
-    hasAnyRooksConflicts: function() {
-      return this.hasAnyRowConflicts() || this.hasAnyColConflicts();
+    hasAnyRooksConflicts: function(skipRows) {
+      if (skipRows) {
+        return this.hasAnyColConflicts();
+      } else {
+        return (
+          this.hasAnyRowConflicts() ||
+          this.hasAnyColConflicts()
+        );
+      }
+      
     },
 
     hasAnyQueenConflictsOn: function(rowIndex, colIndex) {
@@ -50,8 +58,8 @@
       );
     },
 
-    hasAnyQueensConflicts: function() {
-      return this.hasAnyRooksConflicts() || this.hasAnyMajorDiagonalConflicts() || this.hasAnyMinorDiagonalConflicts();
+    hasAnyQueensConflicts: function(skipRows) {
+      return this.hasAnyRooksConflicts(skipRows) || this.hasAnyMajorDiagonalConflicts() || this.hasAnyMinorDiagonalConflicts();
     },
 
     _isInBounds: function(rowIndex, colIndex) {
