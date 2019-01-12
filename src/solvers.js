@@ -43,18 +43,17 @@ window.countNRooksSolutions = function(n) {
   var totalSolutions = 0;
   var parentBoard = new Board({ n: n });
   parentBoard.counter = 0;
-  parentBoard.depth = 0; // pieces left to place
+  parentBoard.depth = 0;
   var deeper = function(prevBoard) {
-    //could create child?
     prevBoard.togglePiece(Math.floor(prevBoard.counter / n), prevBoard.counter % n);
     prevBoard.depth++;
-    if (!prevBoard.hasAnyRooksConflicts()) { //if board checks out
+    if (!prevBoard.hasAnyRooksConflicts()) {
       if (prevBoard.depth === n) {
         totalSolutions++;
         prevBoard.togglePiece(Math.floor(prevBoard.counter / n), prevBoard.counter % n);
-        return null; // break out of base case?
+        return null;
       } else {
-        var parentRows = prevBoard.rows().slice(0); // inheritance?
+        var parentRows = prevBoard.rows().slice(0);
         var child = new Board(parentRows);
         child.counter = prevBoard.counter + 1;
         child.depth = prevBoard.depth;
@@ -66,7 +65,20 @@ window.countNRooksSolutions = function(n) {
     prevBoard.togglePiece(Math.floor(prevBoard.counter / n), prevBoard.counter % n);
     prevBoard.depth--;
     prevBoard.counter++;
-    if (prevBoard._isInBounds(Math.floor(prevBoard.counter / n), prevBoard.counter % n)) {
+    /*
+      d       c
+      0       1 Y - Math.floor(prevBoard.counter / n) evals to 0
+      0       2 Y
+      0       3 Y
+      0       4 X - Math.floor(prevBoard.counter / n) evals to 1
+      1       4 Y -  ''
+      1       5 Y
+      1       6 Y
+      1       7 Y
+      1       8 X - Math.floor(prevBoard.counter / n) evals to 2
+    */
+    if ((prevBoard.depth >= Math.floor(prevBoard.counter / n)) && 
+      prevBoard._isInBounds(Math.floor(prevBoard.counter / n), prevBoard.counter % n)) {
       deeper(prevBoard);
     } else {
       return null;
@@ -154,7 +166,8 @@ window.countNQueensSolutions = function(n) {
     prevBoard.togglePiece(Math.floor(prevBoard.counter / n), prevBoard.counter % n);
     prevBoard.depth--;
     prevBoard.counter++;
-    if (prevBoard._isInBounds(Math.floor(prevBoard.counter / n), prevBoard.counter % n)) {
+    if ((prevBoard.depth >= Math.floor(prevBoard.counter / n)) && 
+      prevBoard._isInBounds(Math.floor(prevBoard.counter / n), prevBoard.counter % n)) {
       deeper(prevBoard);
     } else {
       return null;
