@@ -39,7 +39,47 @@ window.findNRooksSolution = function(n) {
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
+  // var solvedBoards = [];
+  var solutionCount = 0;
+  var newBoard = new Board({ n: n });
+  newBoard.counter = 0; //goes from 0 in top left corner to bottom corner at n2 - 1 (would break on 1 square board)
+  newBoard.piecesPlaced = 0;
   
+  var recurse = function(board) {
+    debugger;
+    //check for unproductive board, for ex:
+    // --> if board counter is past the first row, and no pieces have been placed
+    //     no solutions will be found, i.e., at 0 pieces of an n=4 board we only 
+    //     want to place pieces on counters 0, 1, 2, and 3 (all index 0 )and never 
+    //     of 1 (board.counter % n). If we have only place 1 piece placed but are 
+    //     beginning to check row index 2, we have can run the same check, so on and so forth
+    if (board.piecesPlaced < board.counter % n) { // maybe check at end?
+      return null;
+    }
+    board.togglePiece(Math.floor(board.counter / n), board.counter % n); //takes (row, col);
+    board.piecesPlaced++;
+    board.counter++;
+    if (!board.hasAnyRooksConflicts()) { // return true for valid board
+      if (board.piecesPlaced === n) { //if all pieces have been placed
+        solutionCount++;
+        return null;
+      } else {                              // else we have more pieces to place
+        var child = new Board(board.rows()); // make a derivative board
+        child.counter = board.counter;
+        child.piecesPlaced = board.piecesPlaced;
+        recurse(child);
+      }
+    } // no else, if board was valid or not, we need to try new options
+     // board was invalid, make no children and try again
+    board.togglePiece(Math.floor((board.counter - 1) / n), (board.counter - 1) % n); //remove the piece
+    board.piecesPlaced--;
+    // counter doesn't go down;
+    recurse(board);
+  };
+  recurse(newBoard);
+  console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
+  return solutionCount;
+  //counter math ()
   /*
     no current optimizations:
     - what if counter is too big for pieces remaining?
@@ -73,11 +113,6 @@ window.countNRooksSolutions = function(n) {
     --> else get frustrated
     
   */
-  
-  var solutionCount = undefined; //fixme
-
-  console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
-  return solutionCount;
 };
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
