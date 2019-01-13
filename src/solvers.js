@@ -37,10 +37,11 @@ window.countNRooksSolutions = function(n) {
   var parentBoard = new Board({ n: n });
   parentBoard.counter = 0;
   parentBoard.depth = 0;
+  parentBoard.usedCol = [];
   var deeper = function(prevBoard) {
     prevBoard.togglePiece(Math.floor(prevBoard.counter / n), prevBoard.counter % n);
     prevBoard.depth++;
-    if (!prevBoard.hasAnyRooksConflicts(1)) {
+    if (!prevBoard.usedCol.includes(prevBoard.counter % n)) {
       if (prevBoard.depth === n) {
         totalSolutions++;
         prevBoard.togglePiece(Math.floor(prevBoard.counter / n), prevBoard.counter % n);
@@ -49,6 +50,8 @@ window.countNRooksSolutions = function(n) {
         var parentRows = prevBoard.rows().slice(0);
         var child = new Board(parentRows);
         child.depth = prevBoard.depth;
+        child.usedCol = prevBoard.usedCol.slice(0);
+        child.usedCol.push(prevBoard.counter % n);
         child.counter = (Math.floor(prevBoard.counter / n) + 1) * n;
         if (child._isInBounds(Math.floor(child.counter / n), child.counter % n)) {
           deeper(child);
@@ -80,10 +83,12 @@ window.findNQueensSolution = function(n) {
   if (n === 0) return parentBoard;
   parentBoard.counter = 0;
   parentBoard.depth = 0; // pieces left to place
+  parentBoard.usedCol = [];
   var deeper = function(prevBoard) {
     prevBoard.togglePiece(Math.floor(prevBoard.counter / n), prevBoard.counter % n);
     prevBoard.depth++;
-    if (!prevBoard.hasAnyQueensConflicts(1)) { //if board checks out
+    if (!prevBoard.hasAnyQueensConflicts(1) && 
+      !prevBoard.usedCol.includes(prevBoard.counter % n)) { //if board checks out
       if (prevBoard.depth === n) {
         solution = prevBoard.rows();
         return null;
@@ -91,6 +96,8 @@ window.findNQueensSolution = function(n) {
         var parentRows = prevBoard.rows().slice(0); // inheritance?
         var child = new Board(parentRows);
         child.depth = prevBoard.depth;
+        child.usedCol = prevBoard.usedCol.slice(0);
+        child.usedCol.push(prevBoard.counter % n);
         child.counter = (Math.floor(prevBoard.counter / n) + 1) * n;
         if (child._isInBounds(Math.floor(child.counter / n), child.counter % n)) {
           deeper(child);
@@ -124,10 +131,12 @@ window.countNQueensSolutions = function(n) {
   var parentBoard = new Board({ n: n });
   parentBoard.counter = 0;
   parentBoard.depth = 0; // pieces left to place
+  parentBoard.usedCol = [];
   var deeper = function(prevBoard) {
     prevBoard.togglePiece(Math.floor(prevBoard.counter / n), prevBoard.counter % n);
     prevBoard.depth++;
-    if (!prevBoard.hasAnyQueensConflicts(1)) { //if board checks out
+    if (!prevBoard.hasAnyQueensConflicts(1) && 
+      !prevBoard.usedCol.includes(prevBoard.counter % n)) { 
       if (prevBoard.depth === n) {
         totalSolutions++;
         prevBoard.togglePiece(Math.floor(prevBoard.counter / n), prevBoard.counter % n);
@@ -136,6 +145,8 @@ window.countNQueensSolutions = function(n) {
         var parentRows = prevBoard.rows().slice(0);
         var child = new Board(parentRows);
         child.depth = prevBoard.depth;
+        child.usedCol = prevBoard.usedCol.slice(0);
+        child.usedCol.push(prevBoard.counter % n);
         child.counter = (Math.floor(prevBoard.counter / n) + 1) * n;
         if (child._isInBounds(Math.floor(child.counter / n), child.counter % n)) {
           deeper(child);

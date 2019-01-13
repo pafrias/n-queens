@@ -59,7 +59,17 @@
     },
 
     hasAnyQueensConflicts: function(skipRows) {
-      return this.hasAnyRooksConflicts(skipRows) || this.hasAnyMajorDiagonalConflicts() || this.hasAnyMinorDiagonalConflicts();
+      if (skipRows) {
+        return (
+          this.hasAnyMajorDiagonalConflicts() || 
+          this.hasAnyMinorDiagonalConflicts()
+        );
+      }
+      return (
+        this.hasAnyRooksConflicts(skipRows) || 
+        this.hasAnyMajorDiagonalConflicts() || 
+        this.hasAnyMinorDiagonalConflicts()
+      );
     },
 
     _isInBounds: function(rowIndex, colIndex) {
@@ -149,31 +159,6 @@
     //
     // test if a specific major diagonal on this board contains a conflict
     hasMajorDiagonalConflictAt: function(colIndex) { 
-      
-      /*
-      1,1  2,2,  3,3 should all act as 0,0
-      1,2  2,3       should act as 0,1
-      2,1  3,2       should act as 1,0
-      etc...
-      
-      which, if we're resolving to the sides anyway...
-      --> why not just take negative arguments?
-      
-      negative number route:
-      1) if colIndex is a non-negative number (do what we already did)
-      --> set n to length minus the col index
-      --> loop over the rows n times
-      ----> starting col is colIndex (maybe 0) plus i, starting row is 0 plus i
-      ----> add value to sum, increase i by one
-      ----> check for plural sum (celebrate)
-      2) otherwise, we're negative
-      --> set a variable to positive colIndex?
-      --> n becomes n - positive Index
-      --> loop over the rows n times
-      ----> starting col is 0 plus i, starting row is positive Index
-      ----> add value to sum, increase i by one
-      ----> check for plural sum (celebrate)
-      */
       
       var rows = this.rows();
       var sum = 0;
