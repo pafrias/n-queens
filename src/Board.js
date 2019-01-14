@@ -3,7 +3,18 @@
 // The only portions you need to work on are the helper functions (below)
 
 (function() {
-
+  window.queenTest = function(testNumber, newNumber) {
+    if (testNum % n === newNum % n) {
+      return false;
+    } else if (testNum % n - Math.floor(testNum / n) === newNum % n - Math.floor(newNum / n)) {
+      return false;
+    } else if (testNum % n + Math.floor(testNum / n) === newNum % n + Math.floor(newNum / n)) {
+      return false;
+    } else { 
+      return true;
+    }
+  },
+  
   window.Board = Backbone.Model.extend({
 
     initialize: function (params) {
@@ -37,16 +48,11 @@
       return colIndex + rowIndex;
     },
 
-    hasAnyRooksConflicts: function(skipRows) {
-      if (skipRows) {
-        return this.hasAnyColConflicts();
-      } else {
-        return (
-          this.hasAnyRowConflicts() ||
-          this.hasAnyColConflicts()
-        );
-      }
-      
+    hasAnyRooksConflicts: function() {
+      return (
+        this.hasAnyRowConflicts() ||
+        this.hasAnyColConflicts()
+      );
     },
 
     hasAnyQueenConflictsOn: function(rowIndex, colIndex) {
@@ -58,15 +64,9 @@
       );
     },
 
-    hasAnyQueensConflicts: function(skipRows) {
-      if (skipRows) {
-        return (
-          this.hasAnyMajorDiagonalConflicts() || 
-          this.hasAnyMinorDiagonalConflicts()
-        );
-      }
+    hasAnyQueensConflicts: function() {
       return (
-        this.hasAnyRooksConflicts(skipRows) || 
+        this.hasAnyRooksConflicts() || 
         this.hasAnyMajorDiagonalConflicts() || 
         this.hasAnyMinorDiagonalConflicts()
       );
