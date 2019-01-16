@@ -3,17 +3,6 @@
 // The only portions you need to work on are the helper functions (below)
 
 (function() {
-  window.queenTest = function(testNumber, newNumber) {
-    if (testNum % n === newNum % n) {
-      return false;
-    } else if (testNum % n - Math.floor(testNum / n) === newNum % n - Math.floor(newNum / n)) {
-      return false;
-    } else if (testNum % n + Math.floor(testNum / n) === newNum % n + Math.floor(newNum / n)) {
-      return false;
-    } else { 
-      return true;
-    }
-  },
   
   window.Board = Backbone.Model.extend({
 

@@ -14,7 +14,25 @@
 // return a matrix (an array of arrays) representing a single nxn chessboard,
 //  with n rooks placed such that none of them can attack each other
 
+var queenTest = function(n, testNumber, newNumber) {
+  if (testNumber % n === newNumber % n) {
+    return false;
+  } else if (testNumber % n - Math.floor(testNumber / n) === newNumber % n - Math.floor(newNumber / n)) {
+    return false;
+  } else if (testNumber % n + Math.floor(testNumber / n) === newNumber % n + Math.floor(newNumber / n)) {
+    return false;
+  } else { 
+    return true;
+  }
+};
 
+var queenParser = function(n, ...nums) {
+  var result = new Board( { n: n } );
+  for (index of nums) {
+    result.togglePiece(Math.floor(index / n), index % n);
+  }
+  return result;
+};
 
 window.findNRooksSolution = function(n) {
   
@@ -53,23 +71,24 @@ window.countNRooksSolutions = function(n) {
 };
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
-window.countNQueensSolutions = function(n) {
+window.findNQueensSolution = function(n) {
   
   var recurse = function(depth = 0, ...nums) {
     if (depth === n) {
-      totalSolutions++;
-      return;
+      return nums;
     }
     for (var i = 0; i < n; i ++) {
-      if (nums.every(num => queenTest(num, (depth * n + i)))) { // test for queens
-        recurse(depth + 1, ...nums, (depth * n + i))
+      if (nums.every(num => queenTest(n, num, (depth * n + i)))) { // test for queens
+        return recurse(depth + 1, ...nums, (depth * n + i))
       }
     }
     return;
   };
-  
-  console.log('Single solution for ' + n + ' queens:', totalSolutions);
-  return recurse();
+
+  var resultNums = recurse();
+  var resultBoard = queenParser(n, resultNums)
+  //console.log('Single solution for ' + n + ' queens:', JSON.stringify(resultBoard));
+  return resultBoard.rows();
 };
 
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
@@ -83,7 +102,7 @@ window.countNQueensSolutions = function(n) { //fixMe
       return;
     }
     for (var i = 0; i < n; i ++) {
-      if (nums.every(num => queenTest(num, (depth * n + i)))) { // test for queens
+      if (nums.every(num => queenTest(n, num, (depth * n + i)))) { // test for queens
         recurse(depth + 1, ...nums, (depth * n + i))
       }
     }
@@ -95,45 +114,4 @@ window.countNQueensSolutions = function(n) { //fixMe
   return totalSolutions;
 };
 
-/*
-  skip used columns
-  skip used diagonals
-  
-  memoization and rotation 0.o
-*/
-countNQueensSolutions = function(n) {
-  //solved boards = [];
-  var queenTest = (testNum, newNum) => {
-    if (testNum % n === newNum % n) {
-      return false;
-    } else if (testNum % n - Math.floor(testNum / n) === newNum % n - Math.floor(newNum / n)) {
-      return false;
-    } else if (testNum % n + Math.floor(testNum / n) === newNum % n + Math.floor(newNum / n)) {
-      return false;
-    } else { 
-      return true;
-    }
-  };
-
-  var totalSolutions = 0;
-  
-  var recurse = function(depth = 0, ...nums) {
-    if (depth === n) {
-      totalSolutions++;
-      return;
-    }
-    for (var i = 0; i < n; i ++) {
-      if (nums.every(num => queenTest(num, (depth * n + i)))) { // test for queens
-        recurse(depth + 1, ...nums, (depth * n + i))
-      }
-    }
-    return;
-  };
-  
-  recurse();
-  console.log('Number of solutions for ' + n + ' queens:', totalSolutions);
-  return totalSolutions;
-};
-
-console.log(countNQueensSolutions(8));
 
